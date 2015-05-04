@@ -13,10 +13,15 @@ module Devise
         ldap_config["ssl"] = :simple_tls if ldap_config["ssl"] === true
         ldap_options[:encryption] = ldap_config["ssl"].to_sym if ldap_config["ssl"]
 
-        @ldap = Net::LDAP.new(ldap_options)
-        @ldap.host = ldap_config["host"]
-        @ldap.port = ldap_config["port"]
-        @ldap.base = ldap_config["base"]
+         @ldap  = Net::LDAP.new(
+            :host => ldap_config["host"],
+            :base => ldap_config["base"],
+            :auth => {
+               :method => :simple,
+               :username => ldap_config["admin_user"],
+               :password => ldap_config["admin_password"]
+             }
+           )
         @attribute = ldap_config["attribute"]
         @allow_unauthenticated_bind = ldap_config["allow_unauthenticated_bind"]
 
